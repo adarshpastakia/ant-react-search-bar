@@ -1,0 +1,156 @@
+import React, { useState } from "react";
+import { Button, Checkbox, Col, Form, Input, Row, Select } from "antd";
+import { stylesheet } from "typestyle";
+import { FormComponentProps } from "antd/es/form";
+import { IFilterField, IFilterObject, Operator, Type } from "../utils/models";
+import { RsbFilterOperator } from "./FilterOperator";
+import { RsbFilterValue } from "./FilterValue";
+
+const css = stylesheet({
+  form: {
+    backgroundColor: "#fff",
+    padding: "0 16px",
+    border: "1px solid rgba(0,0,0,.1)",
+    $nest: {
+      "& .ant-form-item-label": {
+        lineHeight: 1,
+        fontWeight: "bold"
+      },
+      "& .ant-form-item-label label": {
+        fontSize: ".8em"
+      }
+    }
+  }
+});
+
+interface IFormProps {
+  filter?: IFilterObject;
+  fields: IFilterField[];
+  onCancel?: () => void;
+  onRemove?: () => void;
+  onChange: (filter: IFilterObject) => void;
+}
+
+const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
+  filter,
+  fields,
+  form,
+  onRemove,
+  onCancel,
+  onChange
+}) => {
+  const { getFieldDecorator } = form;
+  const [hasLabel, setHasLabel] = useState(filter && !!filter.label);
+
+  const [filterObject, setFilterObject] = useState<IFilterObject>(
+    filter || ({ field: "", value: "" } as IFilterObject)
+  );
+
+  const change = (field: keyof IFilterObject, value: any) => {
+    const newFilter = { ...filterObject, [field]: value };
+
+    if (field === "operator") {
+      if ([Operator.EXISTS, Operator.NOT_EXISTS].includes(value)) {
+        newFilter.value = undefined;
+      } else if (newFilter.value === undefined) {
+        newFilter.value = false;
+      }
+    }
+    setFilterObject(newFilter);
+  };
+
+  const apply = () => {
+    form.validateFields(e => {
+      if (!e) {
+        onChange(filterObject);
+      }
+    });
+  };
+
+  const field = fields.find(f => f.key === filterObject.field);
+
+  return (
+    <Form className={css.form} onSubmit={apply}>
+      <Row gutter={8} style={{ width: 420 }}>
+        <Col span={12}>
+          <Form.Item label="Field" colon={false} required={false}>
+            {getFieldDecorator("field", {
+              rules: [{ required: true }],
+              initialValue: filterObject.field
+            })(
+              <Select onChange={f => change("field", f)}>
+                {fields
+                  .filter(f => f.type !== Type.geo)
+                  .map(f => (
+                    <Select.Option key={f.key} value={f.key}>
+                      {f.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            )}
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <RsbFilterOperator
+            form={form}
+            fieldType={field && field.type}
+            value={filterObject && filterObject.operator}
+            onChange={o => change("operator", o)}
+          />
+        </Col>
+      </Row>
+      {![Operator.EXISTS, Operator.NOT_EXISTS].includes(filterObject.operator) && (
+        <>
+          <RsbFilterValue
+            form={form}
+            operator={filterObject.operator}
+            fieldType={field && field.type}
+            fieldValues={field && field.values}
+            value={filterObject.value}
+            onChange={v => change("value", v)}
+          />
+          <Form.Item label="Label" colon={false} required={false}>
+            {getFieldDecorator("label", {
+              rules: [{ required: hasLabel }],
+              initialValue: filterObject.label
+            })(
+              <Input
+                disabled={!hasLabel}
+                onChange={e => change("label", e.target.value)}
+                addonBefore={
+                  <Checkbox checked={hasLabel} onChange={e => setHasLabel(e.target.checked)} />
+                }
+              />
+            )}
+          </Form.Item>
+        </>
+      )}
+      <div
+        style={{
+          display: "grid",
+          gridGap: 4,
+          gridTemplateColumns: "auto 1fr auto auto",
+          padding: "0 0 8px"
+        }}
+      >
+        <Button
+          size="small"
+          type="danger"
+          ghost
+          onClick={onRemove}
+          disabled={!filter || filter.required}
+        >
+          Delete
+        </Button>
+        <div />
+        <Button size="small" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button size="small" type="primary" onClick={apply}>
+          Apply
+        </Button>
+      </div>
+    </Form>
+  );
+};
+export const RsbFilterForm = Form.create<IFormProps & FormComponentProps>()(FilterForm);
