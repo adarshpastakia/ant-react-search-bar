@@ -1,8 +1,7 @@
 import React from "react";
 import { Form, Select } from "antd";
-import { IFilterField, Operator, Type, TypeOperators } from "../utils/models";
+import { Operator, OperatorLabel, Type, TypeOperators } from "../utils/models";
 import { WrappedFormUtils } from "antd/es/form/Form";
-import { operatorLabel } from "../utils/utils";
 
 export const RsbFilterOperator: React.FC<{
   form: WrappedFormUtils;
@@ -23,7 +22,7 @@ export const RsbFilterOperator: React.FC<{
         <Select onChange={onChange} disabled={!fieldType}>
           {operators.map(o => (
             <Select.Option key={o} value={o}>
-              {operatorLabel(o)}
+              {OperatorLabel[o]}
             </Select.Option>
           ))}
         </Select>

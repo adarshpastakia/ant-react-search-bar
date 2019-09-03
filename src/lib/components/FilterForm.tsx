@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Checkbox, Col, Form, Input, Row, Select } from "antd";
+import { Button, Checkbox, Col, Form, Input, Row, Select, Switch } from "antd";
 import { stylesheet } from "typestyle";
 import { FormComponentProps } from "antd/es/form";
 import { IFilterField, IFilterObject, Operator, Type } from "../utils/models";
@@ -50,7 +50,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
     const newFilter = { ...filterObject, [field]: value };
 
     if (field === "operator") {
-      if ([Operator.EXISTS, Operator.NOT_EXISTS].includes(value)) {
+      if (value === Operator.EXISTS) {
         newFilter.value = undefined;
       } else if (newFilter.value === undefined) {
         newFilter.value = false;
@@ -62,7 +62,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
   const apply = () => {
     form.validateFields(e => {
       if (!e) {
-        onChange(filterObject);
+        onChange({ ...filterObject, active: true });
       }
     });
   };
@@ -78,7 +78,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
               rules: [{ required: true }],
               initialValue: filterObject.field
             })(
-              <Select onChange={f => change("field", f)}>
+              <Select onChange={f => change("field", f)} showSearch>
                 {fields
                   .filter(f => f.type !== Type.geo)
                   .map(f => (
@@ -90,7 +90,17 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
             )}
           </Form.Item>
         </Col>
-        <Col span={12}>
+        <Col span={4}>
+          <Form.Item label="Exclude" colon={false}>
+            <Switch
+              className="arsb-switch--negative"
+              checkedChildren="Not"
+              checked={filterObject && filterObject.negative}
+              onChange={o => change("negative", o)}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
           <RsbFilterOperator
             form={form}
             fieldType={field && field.type}
@@ -99,7 +109,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
           />
         </Col>
       </Row>
-      {![Operator.EXISTS, Operator.NOT_EXISTS].includes(filterObject.operator) && (
+      {filterObject.operator !== Operator.EXISTS && (
         <>
           <RsbFilterValue
             form={form}

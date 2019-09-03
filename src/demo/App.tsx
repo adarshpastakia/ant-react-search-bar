@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./app.less";
 import { Input, Menu, Select } from "antd";
-import { ReactSearchBar, RsbField, RsbFilter, RsbOperator, RsbType } from "../lib";
+import { ReactFilterBar, ReactSearchBar, RsbField, RsbFilter, RsbOperator, RsbType } from "../lib";
 
 export const App = () => {
   const filters: RsbFilter[] = [
@@ -19,8 +19,9 @@ export const App = () => {
     },
     {
       field: "number",
-      operator: RsbOperator.NOT_BETWEEN,
+      operator: RsbOperator.BETWEEN,
       value: [9, 18],
+      negative: true,
       active: true
     },
     {
@@ -71,38 +72,31 @@ export const App = () => {
 
   return (
     <div className="x-body">
-      <h1 className="x-header">Kibana style search+filter bar</h1>
+      <h1 className="x-header">
+        <img src="/ant-logo.svg" height={48} /> Kibana style search+filter bar
+      </h1>
       <h4 className="x-section">Basic</h4>
       <ReactSearchBar />
       <br />
 
       <h4 className="x-section">With Filters</h4>
-      <ReactSearchBar
-        hasFilters
-        collapsed={false}
-        filters={f}
-        onFilterChange={setF}
-        fields={fields}
-      />
+      <ReactSearchBar collapsed={false} filters={f} onFilterChange={setF} fields={fields} primaryColor="geekblue" />
+      <br />
+
+      <h4 className="x-section">Filters Only</h4>
+      <ReactFilterBar filters={f} onFilterChange={setF} fields={fields} />
       <br />
 
       <h4 className="x-section">With Options</h4>
-      <ReactSearchBar
-        hasFilters
-        placeholder="Search query..."
-        options={options}
-        filters={f}
-        fields={fields}
-        onFilterChange={setF}
-      />
+      <ReactSearchBar placeholder="Search query..." options={options} filters={[]} />
       <br />
 
       <h4 className="x-section">With Actions</h4>
-      <ReactSearchBar hasFilters actions={actions} />
+      <ReactSearchBar actions={actions} filters={[]} />
       <br />
 
       <h4 className="x-section">With Extra</h4>
-      <ReactSearchBar hasFilters actions={actions}>
+      <ReactSearchBar actions={actions} filters={[]}>
         <Input.Group compact>
           <Select placeholder="Sort By" style={{ width: 120 }}>
             <Select.Option value="">Field</Select.Option>
@@ -117,7 +111,6 @@ export const App = () => {
       <h4 className="x-section">RTL Support</h4>
       <div dir="rtl">
         <ReactSearchBar
-          hasFilters
           collapsed={false}
           filters={filters}
           fields={fields}

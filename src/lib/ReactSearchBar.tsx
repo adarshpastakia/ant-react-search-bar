@@ -1,9 +1,9 @@
-import React, { ReactElement, useCallback, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import { IFilterField, IFilterObject, IQueryObject } from "./utils/models";
 import { Button, Dropdown, Icon, Input, Menu, Select } from "antd";
-import { cssRule, stylesheet } from "typestyle";
 import { RsbFilterButton } from "./components/FilterButton";
-import { RsbFilterContainer } from "./components/FilterContainer";
+import { ReactFilterBar } from "./ReactFilterBar";
+import { useIsLtr } from "./utils/isRtl";
 
 interface ISearchBarProps {
   query?: string;
@@ -14,124 +14,20 @@ interface ISearchBarProps {
   options?: ReactElement<Select>;
   actions?: ReactElement<Menu>;
   collapsed?: boolean;
-  hasFilters?: boolean;
   onCollapsed?: (c: boolean) => void;
   onSearch?: (o: IQueryObject) => void;
   onQueryChange?: (query: string) => void;
   onFilterChange?: (filters: IFilterObject[]) => void;
+
+  primaryColor?: string;
+  negativeColor?: string;
 }
-
-cssRule("[dir='rtl']", {
-  $nest: {
-    "&& .ant-input-group-compact": {
-      $nest: {
-        "& .ant-input-prefix": {
-          left: "unset",
-          right: 12
-        },
-        "& .ant-input-suffix": {
-          left: 12,
-          right: "unset"
-        },
-        "& .anticon-right, & .anticon-search": {
-          transform: "scaleX(-1)"
-        },
-        "& .ant-select-arrow": {
-          left: 11,
-          right: "unset"
-        },
-        "& .ant-select-selection-selected-value": {
-          paddingRight: 0,
-          paddingLeft: 20,
-          float: "right"
-        },
-        "& .ant-select-selection__placeholder": {
-          right: 0,
-          left: 9,
-          textAlign: "right"
-        },
-        "& > *:first-child": {
-          $nest: {
-            "&, & > .ant-select-selection, & > .ant-input": {
-              borderRadius: "0 4px 4px 0"
-            }
-          }
-        },
-        "& > *:last-child": {
-          $nest: {
-            "&, & > .ant-select-selection, & > .ant-input": {
-              borderRadius: "4px 0 0 4px"
-            }
-          }
-        }
-      }
-    }
-  }
-});
-
-const css = stylesheet({
-  filterBar: {
-    display: "flex",
-    flexFlow: "row nowrap",
-    height: 32,
-    $nest: {
-      "& > div, & > span, & > button": {
-        margin: "0 4px"
-      },
-      ".ant-input-group": {
-        display: "flex",
-        flexFlow: "row nowrap"
-      },
-      ".ant-input-group:not(:first-child)": {
-        width: "unset"
-      },
-      ".ant-form-item-control, .ant-form-item-label": {
-        lineHeight: "32px"
-      }
-    }
-  },
-  searchBar: {
-    $nest: {
-      "& .ant-select": {
-        minWidth: 80
-      }
-    }
-  },
-  filterButton: {
-    userSelect: "none",
-    $nest: {
-      "&:hover": {
-        textDecoration: "underline"
-      },
-      "& sup": {
-        borderRadius: 4,
-        height: "unset",
-        lineHeight: "1.5em",
-        minWidth: "1em",
-        fontWeight: "bold",
-        fontSize: ".8em",
-        margin: "0 4px"
-      }
-    }
-  }
-});
-
-const useIsLtr = () => {
-  const [isLtr, setIsLtr] = useState(true);
-  const ref: any = useCallback((node: HTMLDivElement | null) => {
-    if (node !== null) {
-      setIsLtr((node ? getComputedStyle(node).direction : "ltr") !== "rtl");
-    }
-  }, []);
-  return [isLtr, ref];
-};
 
 export const ReactSearchBar: React.FC<ISearchBarProps> = ({
   collapsed = true,
   onCollapsed,
   placeholder,
-  hasFilters,
-  filters = [],
+  filters,
   onFilterChange,
   onSearch,
   query,
@@ -140,6 +36,8 @@ export const ReactSearchBar: React.FC<ISearchBarProps> = ({
   options,
   actions,
   disabled,
+  primaryColor,
+  negativeColor,
   children
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(collapsed);
@@ -155,7 +53,7 @@ export const ReactSearchBar: React.FC<ISearchBarProps> = ({
     if (onSearch) {
       onSearch({
         query,
-        filters
+        filters: filters || []
       });
     }
   };
@@ -163,10 +61,10 @@ export const ReactSearchBar: React.FC<ISearchBarProps> = ({
   const [isLtr, ref] = useIsLtr();
 
   return (
-    <div ref={ref}>
-      <div className={css.filterBar}>
-        <Input.Group compact className={css.searchBar}>
-          {hasFilters && (
+    <div ref={ref} className={`arsb-${primaryColor}`}>
+      <div className="arsb-filter__bar">
+        <Input.Group compact className="arsb-search__bar">
+          {!!filters && (
             <RsbFilterButton
               collapsed={isCollapsed}
               onCollapsed={toggleCollapsed}
@@ -194,13 +92,14 @@ export const ReactSearchBar: React.FC<ISearchBarProps> = ({
           </Dropdown>
         )}
       </div>
-      {hasFilters && !isCollapsed && (
-        <RsbFilterContainer
-          placement={isLtr ? "bottomLeft" : "bottomRight"}
+      {!!filters && !isCollapsed && (
+        <ReactFilterBar
+          primaryColor={primaryColor}
+          negativeColor={negativeColor}
           filters={filters}
           fields={fields}
           disabled={disabled}
-          onChange={onFilterChange}
+          onFilterChange={onFilterChange}
         />
       )}
     </div>

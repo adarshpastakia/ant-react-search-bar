@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Dropdown, Icon, Menu, Tag } from "antd";
-import { IFilterField, IFilterObject, Operator, Type } from "../utils/models";
+import { IFilterField, IFilterObject, Operator, OperatorLabel, Type } from "../utils/models";
 import { stylesheet } from "typestyle";
 import { RsbFilterForm } from "./FilterForm";
 import { ClickParam } from "antd/es/menu";
-import { isNot, tagOperator, toggleOperator } from "../utils/utils";
 import { DateUtil } from "ant-react-date-selector";
 
 const css = stylesheet({
@@ -25,7 +24,6 @@ const css = stylesheet({
   tagInner: {
     maxWidth: "20em",
     display: "grid",
-    gridGap: 4,
     gridAutoFlow: "column",
     alignItems: "center"
   },
@@ -41,37 +39,33 @@ const css = stylesheet({
   }
 });
 
-const tagColor = (f: IFilterObject) => {
+const fnTagColor = (f: IFilterObject, primaryColor = "blue", negativeColor = "red") => {
   if (f.active === false) {
     return "";
-  } else if (f.operator.toString().includes("NOT")) {
-    return "red";
+  } else if (f.negative) {
+    return negativeColor;
   } else {
-    return "blue";
+    return primaryColor;
   }
 };
 
-const tagButton = (f: IFilterObject) => {
-  if (f.operator.toString().includes("NOT")) {
-    return "danger";
-  } else {
-    return "primary";
-  }
+const fnTagButton = (f: IFilterObject) => {
+  return f.negative ? "danger" : "primary";
 };
 
-const tagLabel = (f: IFilterObject, fields: IFilterField[]) => {
+const fnTagLabel = (f: IFilterObject, fields: IFilterField[]) => {
   const field = fields.find(ff => ff.key === f.field);
   return field ? field.name : f.field;
 };
 
-const tagValue = (f: IFilterObject, isDate?: boolean) => {
+const fnTagValue = (f: IFilterObject, isDate?: boolean) => {
   if (f.label) {
     return f.label;
   } else if (isDate && f.value) {
     return DateUtil.label(f.value.toString());
   } else if (Array.isArray(f.value)) {
     return `[${f.value}]`;
-  } else if ([Operator.WITHIN, Operator.NOT_WITHIN].includes(f.operator)) {
+  } else if (f.operator === Operator.WITHIN) {
     return "Area";
   } else {
     return f.value !== undefined ? `${f.value}` : "";
@@ -79,23 +73,41 @@ const tagValue = (f: IFilterObject, isDate?: boolean) => {
 };
 
 interface ITagProps {
+  dir: "ltr" | "rtl";
   filter: IFilterObject;
   fields: IFilterField[];
   placement: "bottomLeft" | "bottomRight";
   onRemove: () => void;
   onChange: (filter: IFilterObject) => void;
+
+  primaryColor?: string;
+  negativeColor?: string;
 }
 export const RsbFilterTag: React.FC<ITagProps> = ({
+  dir,
   filter,
   fields,
   onChange,
   onRemove,
-  placement
+  placement,
+  primaryColor,
+  negativeColor
 }) => {
   const [dropdown, setDropdown] = useState(false);
   const [editing, setEditing] = useState(false);
 
-  const field = fields.find(f => f.key === filter.field);
+  const field = useMemo(() => fields.find(f => f.key === filter.field), [filter, fields]);
+  const tagLabel = useMemo(() => fnTagLabel(filter, fields), [filter, fields]);
+  const tagButton = useMemo(() => fnTagButton(filter), [filter]);
+  const tagValue = useMemo(() => fnTagValue(filter, !!field && field.type === Type.date), [
+    filter,
+    field
+  ]);
+  const tagColor = useMemo(() => fnTagColor(filter, primaryColor, negativeColor), [
+    filter,
+    primaryColor,
+    negativeColor
+  ]);
 
   const change = (field: keyof IFilterObject, value: any) => {
     onChange({ ...filter, [field]: value });
@@ -106,6 +118,11 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
     setDropdown(false);
   };
 
+  const doRemove = () => {
+    setDropdown(false);
+    onRemove();
+  };
+
   const menuClicked = ({ key, domEvent }: ClickParam) => {
     if (key === "edit") {
       setEditing(true);
@@ -114,8 +131,8 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
     if (key === "active") {
       change("active", !filter.active);
     }
-    if (key === "operator") {
-      change("operator", toggleOperator(filter.operator));
+    if (key === "negative") {
+      change("negative", filter.negative !== true);
     }
     if (key === "remove") {
       setDropdown(false);
@@ -137,9 +154,9 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
         <Icon type={filter.active ? "eye-invisible" : "eye"} />{" "}
         {filter.active ? "Disable" : "Enable"}
       </Menu.Item>
-      <Menu.Item key="operator">
-        <Icon type={isNot(filter.operator) ? "plus-circle" : "minus-circle"} />{" "}
-        {isNot(filter.operator) ? "Include" : "Exclude"}
+      <Menu.Item key="negative">
+        <Icon type={filter.negative ? "plus-circle" : "minus-circle"} />{" "}
+        {filter.negative ? "Include" : "Exclude"}
       </Menu.Item>
       <Menu.Item key="remove">
         <Icon type="delete" /> Remove
@@ -148,18 +165,20 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
   );
 
   const form = (
-    <RsbFilterForm
-      fields={fields}
-      filter={filter}
-      onChange={onUpdate}
-      onCancel={() => setDropdown(false)}
-      onRemove={onRemove}
-    />
+    <div dir={dir}>
+      <RsbFilterForm
+        fields={fields}
+        filter={filter}
+        onChange={onUpdate}
+        onCancel={() => setDropdown(false)}
+        onRemove={doRemove}
+      />
+    </div>
   );
 
   return (
     <Tag
-      color={tagColor(filter)}
+      color={tagColor}
       className={css.tag}
       style={{ opacity: filter.active !== false ? 1 : 0.5 }}
     >
@@ -174,7 +193,7 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
           {!filter.required ? (
             <Button
               ghost
-              type={tagButton(filter)}
+              type={tagButton}
               size="small"
               className={css.tagCheckbox}
               style={{ border: 0 }}
@@ -196,18 +215,18 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
           )}
           <div className={css.tagLabel}>
             <bdi>
-              <b>{tagLabel(filter, fields)}</b>
+              <b>{tagLabel}</b>
             </bdi>
-            <i style={{ textDecoration: isNot(filter.operator) ? "line-through" : "none" }}>
-              {tagOperator(filter.operator)}
+            <i style={{ textDecoration: filter.negative ? "line-through" : "none" }}>
+              {OperatorLabel[filter.operator]}
             </i>
-            <bdi>{tagValue(filter, field && field.type === Type.date)}</bdi>
+            <bdi>{tagValue}</bdi>
           </div>
         </div>
       </Dropdown>
       <Button
         ghost
-        type={tagButton(filter)}
+        type={tagButton}
         size="small"
         onClick={onRemove}
         disabled={filter.required}
