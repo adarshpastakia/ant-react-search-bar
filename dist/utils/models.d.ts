@@ -8,11 +8,8 @@ export declare enum Type {
 }
 export declare enum Operator {
     EXISTS = "EXISTS",
-    NOT_EXISTS = "NOT_EXISTS",
     IS = "IS",
-    IS_NOT = "IS_NOT",
     IN = "IN",
-    NOT_IN = "NOT_IN",
     LT = "LT",
     GT = "GT",
     LTE = "LTE",
@@ -21,9 +18,7 @@ export declare enum Operator {
     STARTS = "STARTS",
     ENDS = "ENDS",
     WITHIN = "WITHIN",
-    NOT_WITHIN = "NOT_WITHIN",
-    BETWEEN = "BETWEEN",
-    NOT_BETWEEN = "NOT_BETWEEN"
+    BETWEEN = "BETWEEN"
 }
 export declare const TypeOperators: {
     [Type.other]: Operator[];
@@ -35,15 +30,10 @@ export declare const TypeOperators: {
 };
 export declare const OperatorValueType: {
     [Operator.EXISTS]: string;
-    [Operator.NOT_EXISTS]: string;
     [Operator.IS]: string;
-    [Operator.IS_NOT]: string;
     [Operator.IN]: string;
-    [Operator.NOT_IN]: string;
     [Operator.BETWEEN]: string;
-    [Operator.NOT_BETWEEN]: string;
     [Operator.WITHIN]: string;
-    [Operator.NOT_WITHIN]: string;
     [Operator.STARTS]: string;
     [Operator.ENDS]: string;
     [Operator.CONTAINS]: string;
@@ -51,6 +41,20 @@ export declare const OperatorValueType: {
     [Operator.GT]: string;
     [Operator.LTE]: string;
     [Operator.GTE]: string;
+};
+export declare const OperatorLabel: {
+    [Operator.IS]: string;
+    [Operator.IN]: string;
+    [Operator.EXISTS]: string;
+    [Operator.BETWEEN]: string;
+    [Operator.WITHIN]: string;
+    [Operator.GT]: string;
+    [Operator.LT]: string;
+    [Operator.GTE]: string;
+    [Operator.LTE]: string;
+    [Operator.CONTAINS]: string;
+    [Operator.STARTS]: string;
+    [Operator.ENDS]: string;
 };
 export declare type AnyValue = string | number | {
     [key: string]: any;
@@ -78,6 +82,7 @@ export interface IFilterObject {
     label?: string;
     active?: boolean;
     pinned?: boolean;
+    negative?: boolean;
     editable?: boolean;
     required?: boolean;
 }

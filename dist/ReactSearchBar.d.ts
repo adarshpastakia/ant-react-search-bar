@@ -10,11 +10,12 @@ interface ISearchBarProps {
     options?: ReactElement<Select>;
     actions?: ReactElement<Menu>;
     collapsed?: boolean;
-    hasFilters?: boolean;
     onCollapsed?: (c: boolean) => void;
     onSearch?: (o: IQueryObject) => void;
     onQueryChange?: (query: string) => void;
     onFilterChange?: (filters: IFilterObject[]) => void;
+    primaryColor?: string;
+    negativeColor?: string;
 }
 export declare const ReactSearchBar: React.FC<ISearchBarProps>;
 export {};

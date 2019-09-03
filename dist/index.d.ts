@@ -1,5 +1,5 @@
 export * from "./ReactSearchBar";
-export * from "./components/FilterContainer";
+export * from "./ReactFilterBar";
 import { IFilterField, IFilterObject, Operator, Type } from "./utils/models";
 export declare const RsbType: typeof Type;
 export declare const RsbOperator: typeof Operator;

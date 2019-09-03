@@ -11,11 +11,7 @@ var _antd = require("antd");
 
 var _models = require("../utils/models");
 
-var _typestyle = require("typestyle");
-
 var _FilterForm = require("./FilterForm");
-
-var _utils = require("../utils/utils");
 
 var _antReactDateSelector = require("ant-react-date-selector");
 
@@ -35,73 +31,38 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var css = (0, _typestyle.stylesheet)({
-  tagCheckbox: {
-    $nest: {
-      "& svg": {
-        margin: "-1px 0 0 -1px"
-      }
-    }
-  },
-  tag: {
-    display: "flex",
-    marginTop: 2,
-    marginBottom: 2,
-    padding: 0,
-    flexFlow: "row nowrap"
-  },
-  tagInner: {
-    maxWidth: "20em",
-    display: "grid",
-    gridGap: 4,
-    gridAutoFlow: "column",
-    alignItems: "center"
-  },
-  tagLabel: {
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    $nest: {
-      "& > i": {
-        margin: "0 4px"
-      }
-    }
-  }
-});
+var fnTagColor = function fnTagColor(f) {
+  var primaryColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "blue";
+  var negativeColor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "red";
 
-var tagColor = function tagColor(f) {
   if (f.active === false) {
     return "";
-  } else if (f.operator.toString().includes("NOT")) {
-    return "red";
+  } else if (f.negative) {
+    return negativeColor;
   } else {
-    return "blue";
+    return primaryColor;
   }
 };
 
-var tagButton = function tagButton(f) {
-  if (f.operator.toString().includes("NOT")) {
-    return "danger";
-  } else {
-    return "primary";
-  }
+var fnTagButton = function fnTagButton(f) {
+  return f.negative ? "danger" : "primary";
 };
 
-var tagLabel = function tagLabel(f, fields) {
+var fnTagLabel = function fnTagLabel(f, fields) {
   var field = fields.find(function (ff) {
     return ff.key === f.field;
   });
   return field ? field.name : f.field;
 };
 
-var tagValue = function tagValue(f, isDate) {
+var fnTagValue = function fnTagValue(f, isDate) {
   if (f.label) {
     return f.label;
   } else if (isDate && f.value) {
     return _antReactDateSelector.DateUtil.label(f.value.toString());
   } else if (Array.isArray(f.value)) {
     return "[".concat(f.value, "]");
-  } else if ([_models.Operator.WITHIN, _models.Operator.NOT_WITHIN].includes(f.operator)) {
+  } else if (f.operator === _models.Operator.WITHIN) {
     return "Area";
   } else {
     return f.value !== undefined ? "".concat(f.value) : "";
@@ -109,11 +70,14 @@ var tagValue = function tagValue(f, isDate) {
 };
 
 var RsbFilterTag = function RsbFilterTag(_ref) {
-  var filter = _ref.filter,
+  var dir = _ref.dir,
+      filter = _ref.filter,
       fields = _ref.fields,
       onChange = _ref.onChange,
       onRemove = _ref.onRemove,
-      placement = _ref.placement;
+      placement = _ref.placement,
+      primaryColor = _ref.primaryColor,
+      negativeColor = _ref.negativeColor;
 
   var _useState = (0, _react.useState)(false),
       _useState2 = _slicedToArray(_useState, 2),
@@ -125,9 +89,23 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
       editing = _useState4[0],
       setEditing = _useState4[1];
 
-  var field = fields.find(function (f) {
-    return f.key === filter.field;
-  });
+  var field = (0, _react.useMemo)(function () {
+    return fields.find(function (f) {
+      return f.key === filter.field;
+    });
+  }, [filter, fields]);
+  var tagLabel = (0, _react.useMemo)(function () {
+    return fnTagLabel(filter, fields);
+  }, [filter, fields]);
+  var tagButton = (0, _react.useMemo)(function () {
+    return fnTagButton(filter);
+  }, [filter]);
+  var tagValue = (0, _react.useMemo)(function () {
+    return fnTagValue(filter, !!field && field.type === _models.Type.date);
+  }, [filter, field]);
+  var tagColor = (0, _react.useMemo)(function () {
+    return fnTagColor(filter, primaryColor, negativeColor);
+  }, [filter, primaryColor, negativeColor]);
 
   var change = function change(field, value) {
     onChange(_objectSpread({}, filter, _defineProperty({}, field, value)));
@@ -136,6 +114,11 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
   var onUpdate = function onUpdate(filter) {
     onChange(filter);
     setDropdown(false);
+  };
+
+  var doRemove = function doRemove() {
+    setDropdown(false);
+    onRemove();
   };
 
   var menuClicked = function menuClicked(_ref2) {
@@ -151,8 +134,8 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
       change("active", !filter.active);
     }
 
-    if (key === "operator") {
-      change("operator", (0, _utils.toggleOperator)(filter.operator));
+    if (key === "negative") {
+      change("negative", filter.negative !== true);
     }
 
     if (key === "remove") {
@@ -183,28 +166,30 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
   }, _react.default.createElement(_antd.Icon, {
     type: filter.active ? "eye-invisible" : "eye"
   }), " ", filter.active ? "Disable" : "Enable"), _react.default.createElement(_antd.Menu.Item, {
-    key: "operator"
+    key: "negative"
   }, _react.default.createElement(_antd.Icon, {
-    type: (0, _utils.isNot)(filter.operator) ? "plus-circle" : "minus-circle"
-  }), " ", (0, _utils.isNot)(filter.operator) ? "Include" : "Exclude"), _react.default.createElement(_antd.Menu.Item, {
+    type: filter.negative ? "plus-circle" : "minus-circle"
+  }), " ", filter.negative ? "Include" : "Exclude"), _react.default.createElement(_antd.Menu.Item, {
     key: "remove"
   }, _react.default.createElement(_antd.Icon, {
     type: "delete"
   }), " Remove"));
 
-  var form = _react.default.createElement(_FilterForm.RsbFilterForm, {
+  var form = _react.default.createElement("div", {
+    dir: dir
+  }, _react.default.createElement(_FilterForm.RsbFilterForm, {
     fields: fields,
     filter: filter,
     onChange: onUpdate,
     onCancel: function onCancel() {
       return setDropdown(false);
     },
-    onRemove: onRemove
-  });
+    onRemove: doRemove
+  }));
 
   return _react.default.createElement(_antd.Tag, {
-    color: tagColor(filter),
-    className: css.tag,
+    color: tagColor,
+    className: "arsb-filter__tag",
     style: {
       opacity: filter.active !== false ? 1 : 0.5
     }
@@ -215,12 +200,12 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
     overlay: editing || filter.required ? form : menu,
     onVisibleChange: setDropdown
   }, _react.default.createElement("div", {
-    className: css.tagInner
+    className: "arsb-filter__tag--inner"
   }, !filter.required ? _react.default.createElement(_antd.Button, {
     ghost: true,
-    type: tagButton(filter),
+    type: tagButton,
     size: "small",
-    className: css.tagCheckbox,
+    className: "arsb-filter__tag--checkbox",
     style: {
       border: 0
     },
@@ -237,14 +222,14 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
       borderWidth: filter.active !== false ? 0 : 1
     }
   })) : _react.default.createElement("span", null, "\xA0"), _react.default.createElement("div", {
-    className: css.tagLabel
-  }, _react.default.createElement("bdi", null, _react.default.createElement("b", null, tagLabel(filter, fields))), _react.default.createElement("i", {
+    className: "arsb-filter__tag--label"
+  }, _react.default.createElement("bdi", null, _react.default.createElement("b", null, tagLabel)), _react.default.createElement("i", {
     style: {
-      textDecoration: (0, _utils.isNot)(filter.operator) ? "line-through" : "none"
+      textDecoration: filter.negative ? "line-through" : "none"
     }
-  }, (0, _utils.tagOperator)(filter.operator)), _react.default.createElement("bdi", null, tagValue(filter, field && field.type === _models.Type.date))))), _react.default.createElement(_antd.Button, {
+  }, _models.OperatorLabel[filter.operator]), _react.default.createElement("bdi", null, tagValue)))), _react.default.createElement(_antd.Button, {
     ghost: true,
-    type: tagButton(filter),
+    type: tagButton,
     size: "small",
     onClick: onRemove,
     disabled: filter.required,

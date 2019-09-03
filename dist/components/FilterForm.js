@@ -9,8 +9,6 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _antd = require("antd");
 
-var _typestyle = require("typestyle");
-
 var _models = require("../utils/models");
 
 var _FilterOperator = require("./FilterOperator");
@@ -32,23 +30,6 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-var css = (0, _typestyle.stylesheet)({
-  form: {
-    backgroundColor: "#fff",
-    padding: "0 16px",
-    border: "1px solid rgba(0,0,0,.1)",
-    $nest: {
-      "& .ant-form-item-label": {
-        lineHeight: 1,
-        fontWeight: "bold"
-      },
-      "& .ant-form-item-label label": {
-        fontSize: ".8em"
-      }
-    }
-  }
-});
 
 var FilterForm = function FilterForm(_ref) {
   var filter = _ref.filter,
@@ -76,7 +57,7 @@ var FilterForm = function FilterForm(_ref) {
     var newFilter = _objectSpread({}, filterObject, _defineProperty({}, field, value));
 
     if (field === "operator") {
-      if ([_models.Operator.EXISTS, _models.Operator.NOT_EXISTS].includes(value)) {
+      if (value === _models.Operator.EXISTS) {
         newFilter.value = undefined;
       } else if (newFilter.value === undefined) {
         newFilter.value = false;
@@ -89,7 +70,9 @@ var FilterForm = function FilterForm(_ref) {
   var apply = function apply() {
     form.validateFields(function (e) {
       if (!e) {
-        onChange(filterObject);
+        onChange(_objectSpread({}, filterObject, {
+          active: true
+        }));
       }
     });
   };
@@ -98,7 +81,7 @@ var FilterForm = function FilterForm(_ref) {
     return f.key === filterObject.field;
   });
   return _react.default.createElement(_antd.Form, {
-    className: css.form,
+    className: "arsb-filter__form",
     onSubmit: apply
   }, _react.default.createElement(_antd.Row, {
     gutter: 8,
@@ -119,7 +102,8 @@ var FilterForm = function FilterForm(_ref) {
   })(_react.default.createElement(_antd.Select, {
     onChange: function onChange(f) {
       return change("field", f);
-    }
+    },
+    showSearch: true
   }, fields.filter(function (f) {
     return f.type !== _models.Type.geo;
   }).map(function (f) {
@@ -128,7 +112,19 @@ var FilterForm = function FilterForm(_ref) {
       value: f.key
     }, f.name);
   }))))), _react.default.createElement(_antd.Col, {
-    span: 12
+    span: 4
+  }, _react.default.createElement(_antd.Form.Item, {
+    label: "Exclude",
+    colon: false
+  }, _react.default.createElement(_antd.Switch, {
+    className: "arsb-switch--negative",
+    checkedChildren: "Not",
+    checked: filterObject && filterObject.negative,
+    onChange: function onChange(o) {
+      return change("negative", o);
+    }
+  }))), _react.default.createElement(_antd.Col, {
+    span: 8
   }, _react.default.createElement(_FilterOperator.RsbFilterOperator, {
     form: form,
     fieldType: field && field.type,
@@ -136,7 +132,7 @@ var FilterForm = function FilterForm(_ref) {
     onChange: function onChange(o) {
       return change("operator", o);
     }
-  }))), ![_models.Operator.EXISTS, _models.Operator.NOT_EXISTS].includes(filterObject.operator) && _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_FilterValue.RsbFilterValue, {
+  }))), filterObject.operator !== _models.Operator.EXISTS && _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_FilterValue.RsbFilterValue, {
     form: form,
     operator: filterObject.operator,
     fieldType: field && field.type,

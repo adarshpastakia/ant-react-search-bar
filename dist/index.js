@@ -22,15 +22,15 @@ Object.keys(_ReactSearchBar).forEach(function (key) {
   });
 });
 
-var _FilterContainer = require("./components/FilterContainer");
+var _ReactFilterBar = require("./ReactFilterBar");
 
-Object.keys(_FilterContainer).forEach(function (key) {
+Object.keys(_ReactFilterBar).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function get() {
-      return _FilterContainer[key];
+      return _ReactFilterBar[key];
     }
   });
 });

@@ -9,43 +9,14 @@ var _react = _interopRequireDefault(require("react"));
 
 var _antd = require("antd");
 
-var _typestyle = require("typestyle");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var css = (0, _typestyle.stylesheet)({
-  filterButton: {
-    userSelect: "none",
-    cursor: "pointer",
-    $nest: {
-      "&&": {
-        display: "flex",
-        flexFlow: "row nowrap",
-        alignItems: "center"
-      },
-      "&:hover label": {
-        cursor: "pointer",
-        textDecoration: "underline"
-      },
-      "& sup": {
-        borderRadius: 4,
-        height: 16,
-        lineHeight: "1.5em",
-        minWidth: "1em",
-        fontWeight: "bold",
-        fontSize: ".8em",
-        margin: "0 4px"
-      }
-    }
-  }
-});
 
 var RsbFilterButton = function RsbFilterButton(_ref) {
   var collapsed = _ref.collapsed,
       onCollapsed = _ref.onCollapsed,
       filterCount = _ref.filterCount;
   return _react.default.createElement(_antd.Tag, {
-    className: css.filterButton,
+    className: "arsb-filter__button",
     onClick: onCollapsed
   }, _react.default.createElement("label", {
     style: {
@@ -53,11 +24,8 @@ var RsbFilterButton = function RsbFilterButton(_ref) {
     }
   }, "Filters"), _react.default.createElement(_antd.Badge, {
     showZero: true,
-    count: filterCount,
-    style: {
-      backgroundColor: collapsed ? "rgba(0,0,0,.1)" : "#1890ff",
-      color: collapsed ? "rgba(0,0,0,.6)" : "white"
-    }
+    className: collapsed ? "collapsed" : "expanded",
+    count: filterCount
   }));
 };
 

@@ -11,8 +11,6 @@ var _antd = require("antd");
 
 var _models = require("../utils/models");
 
-var _utils = require("../utils/utils");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -51,7 +49,7 @@ var RsbFilterOperator = function RsbFilterOperator(_ref) {
     return _react.default.createElement(_antd.Select.Option, {
       key: o,
       value: o
-    }, (0, _utils.operatorLabel)(o));
+    }, _models.OperatorLabel[o]);
   }))));
 };
 
