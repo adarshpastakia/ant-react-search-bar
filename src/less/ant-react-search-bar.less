@@ -4,6 +4,7 @@
 
 .arsb {
   &-filter__bar {
+    align-items: center;
     display: flex;
     flex-flow: row nowrap;
     height: 32px;
@@ -27,6 +28,10 @@
     .@{ant-prefix}-form-item-label {
       line-height: 32px;
     }
+  }
+
+  &-button--add {
+    border-style: dashed;
   }
 
   &-search__bar {
@@ -68,6 +73,52 @@
           color: @white;
         }
       }
+    }
+  }
+
+  &-filter__tag {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    padding: 0;
+
+    &--checkbox {
+      & svg {
+        margin: -1px 0 0 -1px;
+      }
+    }
+
+    &--inner {
+      align-items: center;
+      display: grid;
+      grid-auto-flow: column;
+      max-width: 20em;
+    }
+
+    &--label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      & > i {
+        margin: 0 4px;
+      }
+    }
+  }
+
+  &-filter__form {
+    background-color: @white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0 16px;
+
+    & .@{ant-prefix}-form-item-label {
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    & .@{ant-prefix}-form-item-label label {
+      font-size: 0.8em;
     }
   }
 

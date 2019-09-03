@@ -1,27 +1,9 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Col, Form, Input, Row, Select, Switch } from "antd";
-import { stylesheet } from "typestyle";
 import { FormComponentProps } from "antd/es/form";
 import { IFilterField, IFilterObject, Operator, Type } from "../utils/models";
 import { RsbFilterOperator } from "./FilterOperator";
 import { RsbFilterValue } from "./FilterValue";
-
-const css = stylesheet({
-  form: {
-    backgroundColor: "#fff",
-    padding: "0 16px",
-    border: "1px solid rgba(0,0,0,.1)",
-    $nest: {
-      "& .ant-form-item-label": {
-        lineHeight: 1,
-        fontWeight: "bold"
-      },
-      "& .ant-form-item-label label": {
-        fontSize: ".8em"
-      }
-    }
-  }
-});
 
 interface IFormProps {
   filter?: IFilterObject;
@@ -70,7 +52,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
   const field = fields.find(f => f.key === filterObject.field);
 
   return (
-    <Form className={css.form} onSubmit={apply}>
+    <Form className="arsb-filter__form" onSubmit={apply}>
       <Row gutter={8} style={{ width: 420 }}>
         <Col span={12}>
           <Form.Item label="Field" colon={false} required={false}>

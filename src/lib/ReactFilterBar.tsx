@@ -1,21 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { stylesheet } from "typestyle";
 import { Button, Dropdown, Icon, Menu, Tag } from "antd";
 import { RsbFilterTag } from "./components/FilterTag";
 import { IFilterField, IFilterObject } from "./utils/models";
 import { RsbFilterForm } from "./components/FilterForm";
 import { useIsLtr } from "./utils/isRtl";
-
-const css = stylesheet({
-  filters: {
-    display: "flex",
-    flexFlow: "row wrap",
-    alignItems: "center"
-  },
-  addButton: {
-    borderStyle: "dashed"
-  }
-});
 
 interface IContainerProps {
   disabled?: boolean;
@@ -91,7 +79,7 @@ export const ReactFilterBar: React.FC<IContainerProps> = ({
   );
 
   return (
-    <div className={css.filters} ref={ref}>
+    <div className="arsb-filter__bar" ref={ref}>
       <Dropdown overlay={allMenu} placement={placement} trigger={["click"]} disabled={isDisabled}>
         <Button type="link">
           <Icon type="setting" theme={isDisabled ? "outlined" : "twoTone"} />
@@ -126,7 +114,7 @@ export const ReactFilterBar: React.FC<IContainerProps> = ({
         visible={dropdown}
         onVisibleChange={v => setDropdown(v)}
       >
-        <Tag className={css.addButton}>Add Filter</Tag>
+        <Tag className="arsb-button--add">Add Filter</Tag>
       </Dropdown>
     </div>
   );

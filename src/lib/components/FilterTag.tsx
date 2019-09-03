@@ -1,43 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Dropdown, Icon, Menu, Tag } from "antd";
 import { IFilterField, IFilterObject, Operator, OperatorLabel, Type } from "../utils/models";
-import { stylesheet } from "typestyle";
 import { RsbFilterForm } from "./FilterForm";
 import { ClickParam } from "antd/es/menu";
 import { DateUtil } from "ant-react-date-selector";
-
-const css = stylesheet({
-  tagCheckbox: {
-    $nest: {
-      "& svg": {
-        margin: "-1px 0 0 -1px"
-      }
-    }
-  },
-  tag: {
-    display: "flex",
-    marginTop: 2,
-    marginBottom: 2,
-    padding: 0,
-    flexFlow: "row nowrap"
-  },
-  tagInner: {
-    maxWidth: "20em",
-    display: "grid",
-    gridAutoFlow: "column",
-    alignItems: "center"
-  },
-  tagLabel: {
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    $nest: {
-      "& > i": {
-        margin: "0 4px"
-      }
-    }
-  }
-});
 
 const fnTagColor = (f: IFilterObject, primaryColor = "blue", negativeColor = "red") => {
   if (f.active === false) {
@@ -179,7 +145,7 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
   return (
     <Tag
       color={tagColor}
-      className={css.tag}
+      className="arsb-filter__tag"
       style={{ opacity: filter.active !== false ? 1 : 0.5 }}
     >
       <Dropdown
@@ -189,13 +155,13 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
         overlay={editing || filter.required ? form : menu}
         onVisibleChange={setDropdown}
       >
-        <div className={css.tagInner}>
+        <div className="arsb-filter__tag--inner">
           {!filter.required ? (
             <Button
               ghost
               type={tagButton}
               size="small"
-              className={css.tagCheckbox}
+              className="arsb-filter__tag--checkbox"
               style={{ border: 0 }}
               onClick={e => [change("active", !(filter.active !== false)), e.stopPropagation()]}
             >
@@ -213,7 +179,7 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
           ) : (
             <span>&nbsp;</span>
           )}
-          <div className={css.tagLabel}>
+          <div className="arsb-filter__tag--label">
             <bdi>
               <b>{tagLabel}</b>
             </bdi>
