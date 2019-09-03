@@ -81,7 +81,7 @@ export const ReactFilterBar: React.FC<IContainerProps> = ({
   return (
     <div className="arsb-filter__bar" ref={ref}>
       <Dropdown overlay={allMenu} placement={placement} trigger={["click"]} disabled={isDisabled}>
-        <Button type="link">
+        <Button type="link" className="arsb-filter__options">
           <Icon type="setting" theme={isDisabled ? "outlined" : "twoTone"} />
         </Button>
       </Dropdown>

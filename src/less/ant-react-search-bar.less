@@ -3,30 +3,38 @@
 @import "./_rtl-support";
 
 .arsb {
-  &-filter__bar {
-    align-items: center;
-    display: flex;
-    flex-flow: row nowrap;
-    height: 32px;
-
-    & > div,
-    & > span,
-    & > button {
-      margin: 0 4px;
-    }
-
-    .@{ant-prefix}-input-group {
+  &-search {
+    &__bar {
+      align-items: center;
       display: flex;
       flex-flow: row nowrap;
+      height: 32px;
+
+      & > div,
+      & > span,
+      & > button {
+        margin: 2px;
+      }
+
+      .@{ant-prefix}-input-group {
+        display: flex;
+        flex-flow: row nowrap;
+      }
+
+      .@{ant-prefix}-input-group:not(:first-child) {
+        width: unset;
+      }
+
+      .@{ant-prefix}-form-item-control,
+      .@{ant-prefix}-form-item-label {
+        line-height: 32px;
+      }
     }
 
-    .@{ant-prefix}-input-group:not(:first-child) {
-      width: unset;
-    }
-
-    .@{ant-prefix}-form-item-control,
-    .@{ant-prefix}-form-item-label {
-      line-height: 32px;
+    &__input {
+      & .@{ant-prefix}-select {
+        min-width: 80px;
+      }
     }
   }
 
@@ -34,91 +42,100 @@
     border-style: dashed;
   }
 
-  &-search__bar {
-    & .@{ant-prefix}-select {
-      min-width: 80px;
-    }
-  }
-
-  &-filter__button {
-    && {
+  &-filter {
+    &__bar {
       align-items: center;
-      cursor: pointer;
+      display: flex;
+      flex-flow: row wrap;
+
+      & > button, & > div {
+        margin: 2px;
+      }
+    }
+
+    &__button {
+      && {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        flex-flow: row nowrap;
+        user-select: none;
+
+        &:hover label {
+          text-decoration: underline;
+        }
+
+        & .@{ant-prefix}-badge {
+          sup {
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 500;
+            height: 16px;
+            line-height: 1.5em;
+            margin: 0 4px;
+            min-width: 1em;
+          }
+
+          &.collapsed sup {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: @black;
+          }
+
+          &.expanded sup {
+            background-color: @primary-color;
+            color: @white;
+          }
+        }
+      }
+    }
+
+    &__options {
+      height: unset;
+      padding: 0 4px;
+    }
+
+    &__tag {
       display: flex;
       flex-flow: row nowrap;
-      user-select: none;
+      padding: 0;
 
-      &:hover label {
-        text-decoration: underline;
+      &--checkbox {
+        & svg {
+          margin: -1px 0 0 -1px;
+        }
       }
 
-      & .@{ant-prefix}-badge {
-        sup {
-          border-radius: 4px;
-          font-size: 0.8em;
-          font-weight: 500;
-          height: 16px;
-          line-height: 1.5em;
+      &--inner {
+        align-items: center;
+        display: grid;
+        grid-auto-flow: column;
+        max-width: 20em;
+      }
+
+      &--label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        & > i {
           margin: 0 4px;
-          min-width: 1em;
-        }
-
-        &.collapsed sup {
-          background-color: rgba(0, 0, 0, 0.1);
-          color: @black;
-        }
-
-        &.expanded sup {
-          background-color: @primary-color;
-          color: @white;
         }
       }
     }
-  }
 
-  &-filter__tag {
-    display: flex;
-    flex-flow: row nowrap;
-    margin-bottom: 2px;
-    margin-top: 2px;
-    padding: 0;
+    &__form {
+      background-color: @white;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 0 16px;
 
-    &--checkbox {
-      & svg {
-        margin: -1px 0 0 -1px;
+      & .@{ant-prefix}-form-item-label {
+        font-weight: 500;
+        line-height: 1;
       }
-    }
 
-    &--inner {
-      align-items: center;
-      display: grid;
-      grid-auto-flow: column;
-      max-width: 20em;
-    }
-
-    &--label {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      & > i {
-        margin: 0 4px;
+      & .@{ant-prefix}-form-item-label label {
+        font-size: 0.8em;
       }
-    }
-  }
-
-  &-filter__form {
-    background-color: @white;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0 16px;
-
-    & .@{ant-prefix}-form-item-label {
-      font-weight: 500;
-      line-height: 1;
-    }
-
-    & .@{ant-prefix}-form-item-label label {
-      font-size: 0.8em;
     }
   }
 

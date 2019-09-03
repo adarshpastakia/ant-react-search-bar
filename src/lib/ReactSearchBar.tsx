@@ -62,8 +62,8 @@ export const ReactSearchBar: React.FC<ISearchBarProps> = ({
 
   return (
     <div ref={ref} className={`arsb-${primaryColor}`}>
-      <div className="arsb-filter__bar">
-        <Input.Group compact className="arsb-search__bar">
+      <div className="arsb-search__bar">
+        <Input.Group compact className="arsb-search__input">
           {!!filters && (
             <RsbFilterButton
               collapsed={isCollapsed}
