@@ -48,7 +48,8 @@
       display: flex;
       flex-flow: row wrap;
 
-      & > button, & > div {
+      & > button,
+      & > div {
         margin: 2px;
       }
     }
@@ -124,8 +125,8 @@
     }
 
     &__form {
-      background-color: @white;
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: @body-background;
+      border: 1px solid @border-color-base;
       padding: 0 16px;
 
       & .@{ant-prefix}-form-item-label {
@@ -152,14 +153,35 @@
     .make-color-classes(@i - 1);
     @color: extract(@preset-colors, @i);
     @bgColor: "@{color}-5";
+    @hoverColor: "@{color}-4";
     @lightColor: "@{color}-1";
 
     &-@{color} &-filter__button .@{ant-prefix}-badge.expanded sup {
       background: @@bgColor;
     }
 
-    &-@{color} .@{ant-prefix}-btn-primary {
+    &-color--@{color} &-switch--negative {
+      --antd-wave-shadow-color: @@bgColor;
+
+      &.@{ant-prefix}-switch-checked {
+        background-color: @@bgColor;
+      }
+    }
+
+    &-@{color}.@{ant-prefix}-btn-primary {
       color: @@bgColor;
+
+      &:hover {
+        color: @@hoverColor;
+      }
+    }
+
+    &-@{color}.@{ant-prefix}-btn-danger {
+      color: @@bgColor;
+
+      &:hover {
+        color: @@hoverColor;
+      }
     }
 
     &-@{color} .@{iconfont-css-prefix}.@{iconfont-css-prefix}-setting {

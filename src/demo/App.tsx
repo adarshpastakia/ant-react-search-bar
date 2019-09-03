@@ -79,8 +79,15 @@ export const App = () => {
       <ReactSearchBar />
       <br />
 
-      <h4 className="x-section">With Filters</h4>
-      <ReactSearchBar collapsed={false} filters={f} onFilterChange={setF} fields={fields} primaryColor="geekblue" />
+      <h4 className="x-section">With Filters <small>and Custom Colors</small></h4>
+      <ReactSearchBar
+        collapsed={false}
+        filters={f}
+        onFilterChange={setF}
+        fields={fields}
+        primaryColor="geekblue"
+        negativeColor="volcano"
+      />
       <br />
 
       <h4 className="x-section">Filters Only</h4>

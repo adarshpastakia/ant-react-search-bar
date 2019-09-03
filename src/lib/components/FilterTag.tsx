@@ -152,6 +152,7 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
         trigger={["click"]}
         visible={dropdown}
         placement={placement}
+        overlayClassName={`arsb-color--${negativeColor}`}
         overlay={editing || filter.required ? form : menu}
         onVisibleChange={setDropdown}
       >
@@ -161,7 +162,7 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
               ghost
               type={tagButton}
               size="small"
-              className="arsb-filter__tag--checkbox"
+              className={["arsb-filter__tag--checkbox", `arsb-${tagColor}`].join(" ")}
               style={{ border: 0 }}
               onClick={e => [change("active", !(filter.active !== false)), e.stopPropagation()]}
             >
@@ -195,6 +196,7 @@ export const RsbFilterTag: React.FC<ITagProps> = ({
         type={tagButton}
         size="small"
         onClick={onRemove}
+        className={`arsb-${tagColor}`}
         disabled={filter.required}
         style={{
           border: 0,

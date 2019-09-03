@@ -33,6 +33,29 @@
     right: unset;
   }
 
+  & .@{ant-prefix}-input-affix-wrapper .@{ant-prefix}-input {
+    padding-left: @input-padding-horizontal-base;
+    padding-right: @input-padding-horizontal-base;
+
+    &-lg {
+      padding-left: @input-padding-horizontal-lg;
+      padding-right: @input-padding-horizontal-lg;
+    }
+
+    &-sm {
+      padding-left: @input-padding-horizontal-sm;
+      padding-right: @input-padding-horizontal-sm;
+    }
+
+    &:not(:last-child) {
+      padding-left: 30px;
+    }
+
+    &:not(:first-child) {
+      padding-right: 30px;
+    }
+  }
+
   & .@{ant-prefix}-input-group > .@{ant-prefix}-input:last-child,
   & .@{ant-prefix}-input-group-addon:first-child {
     border-radius: 0 4px 4px 0;
@@ -54,6 +77,11 @@
   & .@{ant-prefix}-select-arrow {
     left: 11px;
     right: unset;
+  }
+
+  & .@{ant-prefix}-input-clear-icon + i {
+    margin-left: 0;
+    margin-right: 6px;
   }
 
   & .@{ant-prefix}-select-selection-selected-value {

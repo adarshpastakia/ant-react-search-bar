@@ -112,6 +112,7 @@ export const ReactFilterBar: React.FC<IContainerProps> = ({
         placement={placement}
         trigger={["click"]}
         visible={dropdown}
+        overlayClassName={`arsb-color--${negativeColor}`}
         onVisibleChange={v => setDropdown(v)}
       >
         <Tag className="arsb-button--add">Add Filter</Tag>
