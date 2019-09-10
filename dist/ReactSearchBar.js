@@ -75,10 +75,10 @@ var ReactSearchBar = function ReactSearchBar(_ref) {
     ref: ref,
     className: "arsb-".concat(primaryColor)
   }, _react.default.createElement("div", {
-    className: "arsb-filter__bar"
+    className: "arsb-search__bar"
   }, _react.default.createElement(_antd.Input.Group, {
     compact: true,
-    className: "arsb-search__bar"
+    className: "arsb-search__input"
   }, !!filters && _react.default.createElement(_FilterButton.RsbFilterButton, {
     collapsed: isCollapsed,
     onCollapsed: toggleCollapsed,

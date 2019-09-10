@@ -43,7 +43,8 @@ var ReactFilterBar = function ReactFilterBar(_ref) {
   var _ref$filters = _ref.filters,
       filters = _ref$filters === void 0 ? [] : _ref$filters,
       fields = _ref.fields,
-      disabled = _ref.disabled,
+      _ref$disabled = _ref.disabled,
+      disabled = _ref$disabled === void 0 ? false : _ref$disabled,
       onFilterChange = _ref.onFilterChange,
       primaryColor = _ref.primaryColor,
       negativeColor = _ref.negativeColor;
@@ -61,11 +62,6 @@ var ReactFilterBar = function ReactFilterBar(_ref) {
   var placement = (0, _react.useMemo)(function () {
     return isLtr ? "bottomLeft" : "bottomRight";
   }, [isLtr]);
-  var isDisabled = (0, _react.useMemo)(function () {
-    return disabled || filters.filter(function (f) {
-      return !f.required;
-    }).length === 0;
-  }, [filters, disabled]);
 
   var toggleAll = function toggleAll(e) {
     var newList = filters.map(function (f) {
@@ -124,7 +120,7 @@ var ReactFilterBar = function ReactFilterBar(_ref) {
     type: "eye-invisible"
   }), " Disable All"), _react.default.createElement(_antd.Menu.Item, {
     onClick: onRemoveAll,
-    disabled: isDisabled
+    disabled: disabled
   }, _react.default.createElement(_antd.Icon, {
     type: "delete"
   }), " Remove All"));
@@ -136,12 +132,13 @@ var ReactFilterBar = function ReactFilterBar(_ref) {
     overlay: allMenu,
     placement: placement,
     trigger: ["click"],
-    disabled: isDisabled
+    disabled: disabled
   }, _react.default.createElement(_antd.Button, {
-    type: "link"
+    type: "link",
+    className: "arsb-filter__options"
   }, _react.default.createElement(_antd.Icon, {
     type: "setting",
-    theme: isDisabled ? "outlined" : "twoTone"
+    theme: disabled ? "outlined" : "twoTone"
   }))), filters.map(function (f, i) {
     return _react.default.createElement(_FilterTag.RsbFilterTag, {
       key: "tag".concat(i),
@@ -159,7 +156,7 @@ var ReactFilterBar = function ReactFilterBar(_ref) {
       }
     });
   }), _react.default.createElement(_antd.Dropdown, {
-    disabled: isDisabled,
+    disabled: disabled,
     overlay: dropdown ? _react.default.createElement("div", {
       dir: isLtr ? "ltr" : "rtl"
     }, _react.default.createElement(_FilterForm.RsbFilterForm, {
@@ -172,6 +169,7 @@ var ReactFilterBar = function ReactFilterBar(_ref) {
     placement: placement,
     trigger: ["click"],
     visible: dropdown,
+    overlayClassName: "arsb-color--".concat(negativeColor),
     onVisibleChange: function onVisibleChange(v) {
       return setDropdown(v);
     }

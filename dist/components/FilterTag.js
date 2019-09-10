@@ -197,6 +197,7 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
     trigger: ["click"],
     visible: dropdown,
     placement: placement,
+    overlayClassName: "arsb-color--".concat(negativeColor),
     overlay: editing || filter.required ? form : menu,
     onVisibleChange: setDropdown
   }, _react.default.createElement("div", {
@@ -205,7 +206,7 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
     ghost: true,
     type: tagButton,
     size: "small",
-    className: "arsb-filter__tag--checkbox",
+    className: ["arsb-filter__tag--checkbox", "arsb-".concat(tagColor)].join(" "),
     style: {
       border: 0
     },
@@ -232,6 +233,7 @@ var RsbFilterTag = function RsbFilterTag(_ref) {
     type: tagButton,
     size: "small",
     onClick: onRemove,
+    className: "arsb-".concat(tagColor),
     disabled: filter.required,
     style: {
       border: 0,
