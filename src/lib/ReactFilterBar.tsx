@@ -18,7 +18,7 @@ interface IContainerProps {
 export const ReactFilterBar: React.FC<IContainerProps> = ({
   filters = [],
   fields,
-  disabled,
+  disabled = false,
   onFilterChange,
   primaryColor,
   negativeColor
@@ -27,11 +27,6 @@ export const ReactFilterBar: React.FC<IContainerProps> = ({
 
   const [isLtr, ref] = useIsLtr();
   const placement = useMemo(() => (isLtr ? "bottomLeft" : "bottomRight"), [isLtr]);
-
-  const isDisabled = useMemo(() => disabled || filters.filter(f => !f.required).length === 0, [
-    filters,
-    disabled
-  ]);
 
   const toggleAll = (e: boolean) => {
     const newList = filters.map(f => ({ ...f, active: !!f.required || e }));
@@ -72,7 +67,7 @@ export const ReactFilterBar: React.FC<IContainerProps> = ({
       >
         <Icon type="eye-invisible" /> Disable All
       </Menu.Item>
-      <Menu.Item onClick={onRemoveAll} disabled={isDisabled}>
+      <Menu.Item onClick={onRemoveAll} disabled={disabled}>
         <Icon type="delete" /> Remove All
       </Menu.Item>
     </Menu>
@@ -80,9 +75,9 @@ export const ReactFilterBar: React.FC<IContainerProps> = ({
 
   return (
     <div className="arsb-filter__bar" ref={ref}>
-      <Dropdown overlay={allMenu} placement={placement} trigger={["click"]} disabled={isDisabled}>
+      <Dropdown overlay={allMenu} placement={placement} trigger={["click"]} disabled={disabled}>
         <Button type="link" className="arsb-filter__options">
-          <Icon type="setting" theme={isDisabled ? "outlined" : "twoTone"} />
+          <Icon type="setting" theme={disabled ? "outlined" : "twoTone"} />
         </Button>
       </Dropdown>
       {filters.map((f, i) => (
@@ -99,7 +94,7 @@ export const ReactFilterBar: React.FC<IContainerProps> = ({
         />
       ))}
       <Dropdown
-        disabled={isDisabled}
+        disabled={disabled}
         overlay={
           dropdown ? (
             <div dir={isLtr ? "ltr" : "rtl"}>
