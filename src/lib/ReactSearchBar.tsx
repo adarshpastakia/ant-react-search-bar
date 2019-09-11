@@ -78,7 +78,7 @@ export const ReactSearchBar: React.FC<ISearchBarProps> = ({
             prefix={<Icon type="right" />}
             placeholder={placeholder}
             onSearch={onSubmit}
-            value={query}
+            defaultValue={query}
             onChange={e => onQueryChange && onQueryChange(e.target.value)}
           />
         </Input.Group>
