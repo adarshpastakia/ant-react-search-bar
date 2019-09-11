@@ -91,6 +91,7 @@ var ReactSearchBar = function ReactSearchBar(_ref) {
     }),
     placeholder: placeholder,
     onSearch: onSubmit,
+    value: query,
     onChange: function onChange(e) {
       return onQueryChange && onQueryChange(e.target.value);
     }
