@@ -1,5 +1,7 @@
 # Ant.Design React Search Bar
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/adarshpastakia/ant-react-search-bar.svg)](https://greenkeeper.io/)
+
 ### Kibana style search+filter bar
 
 ---
