@@ -41,7 +41,7 @@ var RsbFilterOperator = function RsbFilterOperator(_ref) {
     rules: [{
       required: true
     }],
-    initialValue: value
+    initialValue: operators.includes(value) ? value : operators[0]
   })(_react.default.createElement(_antd.Select, {
     onChange: onChange,
     disabled: !fieldType

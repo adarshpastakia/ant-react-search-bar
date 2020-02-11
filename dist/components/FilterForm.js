@@ -104,9 +104,7 @@ var FilterForm = function FilterForm(_ref) {
       return change("field", f);
     },
     showSearch: true
-  }, fields.filter(function (f) {
-    return f.type !== _models.Type.geo;
-  }).map(function (f) {
+  }, fields.map(function (f) {
     return _react.default.createElement(_antd.Select.Option, {
       key: f.key,
       value: f.key
@@ -132,7 +130,7 @@ var FilterForm = function FilterForm(_ref) {
     onChange: function onChange(o) {
       return change("operator", o);
     }
-  }))), filterObject.operator !== _models.Operator.EXISTS && _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_FilterValue.RsbFilterValue, {
+  }))), filterObject.operator && filterObject.operator !== _models.Operator.EXISTS && _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_FilterValue.RsbFilterValue, {
     form: form,
     operator: filterObject.operator,
     fieldType: field && field.type,
