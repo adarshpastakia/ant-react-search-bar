@@ -17,7 +17,7 @@ export const RsbFilterOperator: React.FC<{
     <Form.Item label="Operator" colon={false} required={false}>
       {form.getFieldDecorator("operator", {
         rules: [{ required: true }],
-        initialValue: value
+        initialValue: operators.includes(value) ? value : operators[0]
       })(
         <Select onChange={onChange} disabled={!fieldType}>
           {operators.map(o => (

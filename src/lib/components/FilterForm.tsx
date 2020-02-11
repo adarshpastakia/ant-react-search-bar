@@ -62,7 +62,6 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
             })(
               <Select onChange={f => change("field", f)} showSearch>
                 {fields
-                  .filter(f => f.type !== Type.geo)
                   .map(f => (
                     <Select.Option key={f.key} value={f.key}>
                       {f.name}
@@ -91,7 +90,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
           />
         </Col>
       </Row>
-      {filterObject.operator !== Operator.EXISTS && (
+      {filterObject.operator && filterObject.operator !== Operator.EXISTS && (
         <>
           <RsbFilterValue
             form={form}
