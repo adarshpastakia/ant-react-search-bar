@@ -38,7 +38,8 @@ var FilterForm = function FilterForm(_ref) {
       onRemove = _ref.onRemove,
       onCancel = _ref.onCancel,
       onChange = _ref.onChange;
-  var getFieldDecorator = form.getFieldDecorator;
+  var getFieldDecorator = form.getFieldDecorator,
+      setFieldsValue = form.setFieldsValue;
 
   var _useState = (0, _react.useState)(filter && !!filter.label),
       _useState2 = _slicedToArray(_useState, 2),
@@ -57,14 +58,27 @@ var FilterForm = function FilterForm(_ref) {
     var newFilter = _objectSpread({}, filterObject, _defineProperty({}, field, value));
 
     if (field === "operator") {
+      var oldType = filterObject.operator && _models.OperatorValueType[filterObject.operator];
+      var newType = _models.OperatorValueType[value];
+
       if (value === _models.Operator.EXISTS) {
         newFilter.value = undefined;
-      } else if (newFilter.value === undefined) {
-        newFilter.value = false;
+      } else if (oldType !== newType) {
+        newFilter.value = undefined;
       }
     }
 
-    setFilterObject(newFilter);
+    if (field === "field") {
+      var _field = fields.find(function (f) {
+        return f.key === value;
+      });
+
+      newFilter.operator = _field && _field.defaultOperator || _models.Operator.EXISTS;
+      newFilter.value = undefined;
+    }
+
+    setFieldsValue(_objectSpread({}, newFilter));
+    setFilterObject(_objectSpread({}, newFilter));
   };
 
   var apply = function apply() {
@@ -77,9 +91,11 @@ var FilterForm = function FilterForm(_ref) {
     });
   };
 
-  var field = fields.find(function (f) {
-    return f.key === filterObject.field;
-  });
+  var field = (0, _react.useMemo)(function () {
+    return fields.find(function (f) {
+      return f.key === filterObject.field;
+    });
+  }, [filterObject.field]);
   return _react.default.createElement(_antd.Form, {
     className: "arsb-filter__form",
     onSubmit: apply
@@ -125,12 +141,13 @@ var FilterForm = function FilterForm(_ref) {
     span: 8
   }, _react.default.createElement(_FilterOperator.RsbFilterOperator, {
     form: form,
+    defaultValue: field && field.defaultOperator,
     fieldType: field && field.type,
     value: filterObject && filterObject.operator,
     onChange: function onChange(o) {
       return change("operator", o);
     }
-  }))), filterObject.operator && filterObject.operator !== _models.Operator.EXISTS && _react.default.createElement(_react.default.Fragment, null, _react.default.createElement(_FilterValue.RsbFilterValue, {
+  }))), filterObject.operator && filterObject.operator !== _models.Operator.EXISTS && _react.default.createElement(_FilterValue.RsbFilterValue, {
     form: form,
     operator: filterObject.operator,
     fieldType: field && field.type,
@@ -139,7 +156,7 @@ var FilterForm = function FilterForm(_ref) {
     onChange: function onChange(v) {
       return change("value", v);
     }
-  }), _react.default.createElement(_antd.Form.Item, {
+  }), field && _react.default.createElement(_antd.Form.Item, {
     label: "Label",
     colon: false,
     required: false
@@ -159,7 +176,7 @@ var FilterForm = function FilterForm(_ref) {
         return setHasLabel(e.target.checked);
       }
     })
-  })))), _react.default.createElement("div", {
+  }))), _react.default.createElement("div", {
     style: {
       display: "grid",
       gridGap: 4,

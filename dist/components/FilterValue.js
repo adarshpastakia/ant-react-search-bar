@@ -22,24 +22,25 @@ var RsbFilterValue = function RsbFilterValue(_ref) {
       fieldValues = _ref.fieldValues,
       operator = _ref.operator,
       _onChange = _ref.onChange;
-  var type = fieldType !== _models.Type.date && operator ? _models.OperatorValueType[operator] : "single";
+  var type = operator ? _models.OperatorValueType[operator] : "single";
 
   var validateRange = function validateRange(_, v, callback) {
     Array.isArray(value) && callback(v <= value[0] ? "Invalid range" : undefined);
   };
 
-  return type !== "double" ? _react.default.createElement(_antd.Form.Item, {
+  return fieldType === _models.Type.date || type !== "double" ? _react.default.createElement(_antd.Form.Item, {
     label: "Value",
     colon: false,
     required: false
-  }, !fieldValues && type === "single" && form.getFieldDecorator("value", {
+  }, !fieldValues && type !== "multiple" && form.getFieldDecorator("value", {
     rules: [{
       required: true
     }],
     initialValue: value
   })(_react.default.createElement(_FilterInput.RsbFilterInput, {
     type: fieldType,
-    onChange: _onChange
+    onChange: _onChange,
+    isRange: type === "double"
   })), (fieldValues || type === "multiple") && form.getFieldDecorator("value", {
     rules: [{
       required: true

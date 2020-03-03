@@ -25,6 +25,8 @@ var RsbFilterOperator = function RsbFilterOperator(_ref) {
   var form = _ref.form,
       value = _ref.value,
       fieldType = _ref.fieldType,
+      _ref$defaultValue = _ref.defaultValue,
+      defaultValue = _ref$defaultValue === void 0 ? _models.Operator.EXISTS : _ref$defaultValue,
       onChange = _ref.onChange;
 
   var operators = _toConsumableArray(_models.TypeOperators[_models.Type.other]);
@@ -41,7 +43,7 @@ var RsbFilterOperator = function RsbFilterOperator(_ref) {
     rules: [{
       required: true
     }],
-    initialValue: operators.includes(value) ? value : operators[0]
+    initialValue: operators.includes(value) ? value : defaultValue
   })(_react.default.createElement(_antd.Select, {
     onChange: onChange,
     disabled: !fieldType

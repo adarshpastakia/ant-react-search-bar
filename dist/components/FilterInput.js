@@ -18,11 +18,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var RsbFilterInput = _react.default.forwardRef(function (_ref, ref) {
   var type = _ref.type,
       value = _ref.value,
+      _ref$isRange = _ref.isRange,
+      isRange = _ref$isRange === void 0 ? false : _ref$isRange,
       _onChange = _ref.onChange;
 
   switch (type) {
     case _models.Type.date:
       return _react.default.createElement(_antReactDateSelector.ReactDateSelector, {
+        single: !isRange,
         value: value,
         onDateChange: _onChange
       });

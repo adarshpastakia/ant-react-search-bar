@@ -68,6 +68,7 @@ export interface IFilterField {
     key: string;
     name: string;
     type: Type;
+    defaultOperator?: Operator;
     values?: FieldValue[];
 }
 export interface IAction {

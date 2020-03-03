@@ -1,6 +1,6 @@
 {
   "name": "ant-react-search-bar",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Kibana style search+filter bar",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
