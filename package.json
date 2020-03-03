@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "antd": "^3.19.8",
-    "ant-react-date-selector": "^0.0.1",
+    "ant-react-date-selector": "^0.0.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"
   },

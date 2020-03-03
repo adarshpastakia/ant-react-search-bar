@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./app.less";
 import { Input, Menu, Select } from "antd";
 import { ReactFilterBar, ReactSearchBar, RsbField, RsbFilter, RsbOperator, RsbType } from "../lib";
+import { Operator } from "../lib/utils/models";
 
 export const App = () => {
   const filters: RsbFilter[] = [
@@ -50,7 +51,7 @@ export const App = () => {
     { key: "string", name: "String", type: RsbType.string },
     { key: "number", name: "Number", type: RsbType.number },
     { key: "bool", name: "Boolean", type: RsbType.boolean },
-    { key: "date", name: "Date", type: RsbType.date },
+    { key: "date", name: "Date", type: RsbType.date, defaultOperator: Operator.BETWEEN },
     { key: "loc", name: "Location", type: RsbType.geo }
   ];
 
@@ -79,7 +80,9 @@ export const App = () => {
       <ReactSearchBar />
       <br />
 
-      <h4 className="x-section">With Filters <small>and Custom Colors</small></h4>
+      <h4 className="x-section">
+        With Filters <small>and Custom Colors</small>
+      </h4>
       <ReactSearchBar
         collapsed={false}
         filters={f}

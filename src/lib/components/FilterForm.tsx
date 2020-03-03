@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Checkbox, Col, Form, Input, Row, Select, Switch } from "antd";
 import { FormComponentProps } from "antd/es/form";
-import { IFilterField, IFilterObject, Operator, Type } from "../utils/models";
+import { IFilterField, IFilterObject, Operator, OperatorValueType } from "../utils/models";
 import { RsbFilterOperator } from "./FilterOperator";
 import { RsbFilterValue } from "./FilterValue";
 
@@ -21,7 +21,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
   onCancel,
   onChange
 }) => {
-  const { getFieldDecorator } = form;
+  const { getFieldDecorator, setFieldsValue } = form;
   const [hasLabel, setHasLabel] = useState(filter && !!filter.label);
 
   const [filterObject, setFilterObject] = useState<IFilterObject>(
@@ -32,13 +32,22 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
     const newFilter = { ...filterObject, [field]: value };
 
     if (field === "operator") {
+      const oldType = filterObject.operator && OperatorValueType[filterObject.operator];
+      const newType = OperatorValueType[value as Operator];
+
       if (value === Operator.EXISTS) {
         newFilter.value = undefined;
-      } else if (newFilter.value === undefined) {
-        newFilter.value = false;
+      } else if (oldType !== newType) {
+        newFilter.value = undefined;
       }
     }
-    setFilterObject(newFilter);
+    if (field === "field") {
+      const field = fields.find(f => f.key === value);
+      newFilter.operator = (field && field.defaultOperator) || Operator.EXISTS;
+      newFilter.value = undefined;
+    }
+    setFieldsValue({ ...newFilter });
+    setFilterObject({ ...newFilter });
   };
 
   const apply = () => {
@@ -49,7 +58,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
     });
   };
 
-  const field = fields.find(f => f.key === filterObject.field);
+  const field = useMemo(() => fields.find(f => f.key === filterObject.field), [filterObject.field]);
 
   return (
     <Form className="arsb-filter__form" onSubmit={apply}>
@@ -61,12 +70,11 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
               initialValue: filterObject.field
             })(
               <Select onChange={f => change("field", f)} showSearch>
-                {fields
-                  .map(f => (
-                    <Select.Option key={f.key} value={f.key}>
-                      {f.name}
-                    </Select.Option>
-                  ))}
+                {fields.map(f => (
+                  <Select.Option key={f.key} value={f.key}>
+                    {f.name}
+                  </Select.Option>
+                ))}
               </Select>
             )}
           </Form.Item>
@@ -84,6 +92,7 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
         <Col span={8}>
           <RsbFilterOperator
             form={form}
+            defaultValue={field && field.defaultOperator}
             fieldType={field && field.type}
             value={filterObject && filterObject.operator}
             onChange={o => change("operator", o)}
@@ -91,30 +100,30 @@ const FilterForm: React.FC<IFormProps & FormComponentProps> = ({
         </Col>
       </Row>
       {filterObject.operator && filterObject.operator !== Operator.EXISTS && (
-        <>
-          <RsbFilterValue
-            form={form}
-            operator={filterObject.operator}
-            fieldType={field && field.type}
-            fieldValues={field && field.values}
-            value={filterObject.value}
-            onChange={v => change("value", v)}
-          />
-          <Form.Item label="Label" colon={false} required={false}>
-            {getFieldDecorator("label", {
-              rules: [{ required: hasLabel }],
-              initialValue: filterObject.label
-            })(
-              <Input
-                disabled={!hasLabel}
-                onChange={e => change("label", e.target.value)}
-                addonBefore={
-                  <Checkbox checked={hasLabel} onChange={e => setHasLabel(e.target.checked)} />
-                }
-              />
-            )}
-          </Form.Item>
-        </>
+        <RsbFilterValue
+          form={form}
+          operator={filterObject.operator}
+          fieldType={field && field.type}
+          fieldValues={field && field.values}
+          value={filterObject.value}
+          onChange={v => change("value", v)}
+        />
+      )}
+      {field && (
+        <Form.Item label="Label" colon={false} required={false}>
+          {getFieldDecorator("label", {
+            rules: [{ required: hasLabel }],
+            initialValue: filterObject.label
+          })(
+            <Input
+              disabled={!hasLabel}
+              onChange={e => change("label", e.target.value)}
+              addonBefore={
+                <Checkbox checked={hasLabel} onChange={e => setHasLabel(e.target.checked)} />
+              }
+            />
+          )}
+        </Form.Item>
       )}
       <div
         style={{

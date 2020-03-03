@@ -6,9 +6,10 @@ import { WrappedFormUtils } from "antd/es/form/Form";
 export const RsbFilterOperator: React.FC<{
   form: WrappedFormUtils;
   value: Operator;
+  defaultValue?: Operator;
   fieldType?: Type;
   onChange: (o: Operator) => void;
-}> = ({ form, value, fieldType, onChange }) => {
+}> = ({ form, value, fieldType, defaultValue = Operator.EXISTS, onChange }) => {
   const operators = [...TypeOperators[Type.other]];
   if (fieldType && fieldType !== Type.other) {
     operators.push(...TypeOperators[fieldType]);
@@ -17,7 +18,7 @@ export const RsbFilterOperator: React.FC<{
     <Form.Item label="Operator" colon={false} required={false}>
       {form.getFieldDecorator("operator", {
         rules: [{ required: true }],
-        initialValue: operators.includes(value) ? value : operators[0]
+        initialValue: operators.includes(value) ? value : defaultValue
       })(
         <Select onChange={onChange} disabled={!fieldType}>
           {operators.map(o => (

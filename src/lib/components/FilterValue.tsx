@@ -12,20 +12,20 @@ export const RsbFilterValue: React.FC<{
   fieldValues?: FieldValue[];
   onChange: (o: FilterValue) => void;
 }> = ({ form, value, fieldType, fieldValues, operator, onChange }) => {
-  const type: string = fieldType !== Type.date && operator ? OperatorValueType[operator] : "single";
+  const type: string = operator ? OperatorValueType[operator] : "single";
 
   const validateRange = (_: any, v: any, callback: any) => {
     Array.isArray(value) && callback(v <= value[0] ? "Invalid range" : undefined);
   };
 
-  return type !== "double" ? (
+  return fieldType === Type.date || type !== "double" ? (
     <Form.Item label="Value" colon={false} required={false}>
       {!fieldValues &&
-        type === "single" &&
+        type !== "multiple" &&
         form.getFieldDecorator("value", {
           rules: [{ required: true }],
           initialValue: value
-        })(<RsbFilterInput type={fieldType} onChange={onChange} />)}
+        })(<RsbFilterInput type={fieldType} onChange={onChange} isRange={type === "double"} />)}
       {(fieldValues || type === "multiple") &&
         form.getFieldDecorator("value", {
           rules: [{ required: true }],

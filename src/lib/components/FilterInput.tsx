@@ -5,14 +5,15 @@ import { ReactDateSelector } from "ant-react-date-selector";
 
 interface IInputProps {
   type?: Type;
+  isRange?: boolean;
   value?: any;
   onChange?: (o: any) => void;
 }
 export const RsbFilterInput: React.FC<IInputProps> = React.forwardRef<any, IInputProps>(
-  ({ type, value, onChange }, ref) => {
+  ({ type, value, isRange = false, onChange }, ref) => {
     switch (type) {
       case Type.date:
-        return <ReactDateSelector value={value} onDateChange={onChange} />;
+        return <ReactDateSelector single={!isRange} value={value} onDateChange={onChange} />;
       case Type.number:
         return <InputNumber ref={ref} value={value} onChange={onChange} />;
       case Type.boolean:

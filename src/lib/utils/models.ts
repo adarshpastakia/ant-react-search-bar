@@ -34,7 +34,14 @@ export const TypeOperators = {
     Operator.GTE
   ],
   [Type.boolean]: [Operator.IS],
-  [Type.date]: [Operator.BETWEEN],
+  [Type.date]: [
+    Operator.IS,
+    Operator.BETWEEN,
+    Operator.LT,
+    Operator.GT,
+    Operator.LTE,
+    Operator.GTE
+  ],
   [Type.geo]: []
 };
 
@@ -84,6 +91,7 @@ export interface IFilterField {
   key: string;
   name: string;
   type: Type;
+  defaultOperator?: Operator;
   values?: FieldValue[];
 }
 
