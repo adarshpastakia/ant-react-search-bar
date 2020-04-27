@@ -1,5 +1,10 @@
 # Ant.Design React Search Bar
 
+
+> # DEPRECATED
+> ## This repository is moved to [https://github.com/adarshpastakia/ant-extensions](https://github.com/adarshpastakia/ant-extensions)
+
+
 ### Kibana style search+filter bar
 
 ---
